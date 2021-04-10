@@ -9,7 +9,7 @@ const usuariosGet = async(req = request, res = response) => {
     // const { q, nombre = 'No name', apikey, page = 1, limit } = req.query;
 
     const { limite = 5, desde = 0 } = req.query;
-    const query = {estado:true};
+    const query = { estado: true };
 
     const [total, usuarios] = await Promise.all([
         Usuario.count(query),
@@ -19,7 +19,7 @@ const usuariosGet = async(req = request, res = response) => {
     ]);
 
     res.json({
-        msg: 'get API - controlador',
+        msg: 'Usuarios',
         total,
         usuarios
     });
@@ -27,7 +27,7 @@ const usuariosGet = async(req = request, res = response) => {
 
 const usuariosPost = async(req = Request, res = response) => {
 
-    const {password, email, ...body} = req.body;
+    const { password, email, ...body } = req.body;
     const usuario = new Usuario(body);
 
     // Encriptar la contraseña
@@ -55,7 +55,7 @@ const usuariosPut = async(req, res = response) => {
     const { _id, password, email, ...resto } = req.body;
 
     // Validar contra base de datos
-    if(password){
+    if (password) {
 
         // Encriptar la contraseña
         const salt = bcrypt.genSaltSync();
@@ -63,8 +63,10 @@ const usuariosPut = async(req, res = response) => {
 
     }
 
+    // Actualizar registro
     const usuario = await Usuario.findByIdAndUpdate(id, resto);
 
+    // Enviar mensaje a Telegram
     enviarMensaje(`Usuario Actualizado: ${usuario}`);
 
     res.json({
@@ -81,11 +83,11 @@ const usuariosPatch = (req, res = response) => {
 
 const usuariosDelete = async(req, res = response) => {
 
-    const {id} = req.params;
+    const { id } = req.params;
 
     // Borrar Fisicamente
     // const usuario = await Usuario.findByIdAndDelete(id);
-    const usuario = await Usuario.findByIdAndUpdate(id, {estado:false});
+    const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
 
     res.json({
         msg: 'delete API - usuariosDelete',
